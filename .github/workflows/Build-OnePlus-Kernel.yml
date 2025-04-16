@@ -158,9 +158,9 @@ jobs:
           elif [ "${{ github.event.inputs.kernelsu_variant }}" == "RKSU" ]; then
             cd KernelSU
           elif [ "${{ github.event.inputs.kernelsu_variant }}" == "SKSU-U" ]; then
-            cp -r ../SukiSU_patch/other/lz4k/include/linux/* ./common/include/linux
-            cp -r ../SukiSU_patch/other/lz4k/lib/* ./common/lib
-            cp -r ../SukiSU_patch/other/lz4k/crypto/* ./common/crypto
+            #cp -r ../SukiSU_patch/other/lz4k/include/linux/* ./common/include/linux
+            #cp -r ../SukiSU_patch/other/lz4k/lib/* ./common/lib
+            #cp -r ../SukiSU_patch/other/lz4k/crypto/* ./common/crypto
             cd KernelSU
           fi
           
@@ -184,12 +184,10 @@ jobs:
             cp ../../kernel_patches4mksu/hooks/new_hooks.patch ./
             patch -p1 -F 3 < new_hooks.patch
          elif [ "${{ github.event.inputs.kernelsu_variant }}" = "SKSU-U" ]; then
-            cp ../../SukiSU_patch/hooks/new_hooks.patch ./
-            patch -p1 -F 3 < new_hooks.patch
-         if [ "${{ github.event.inputs.KERNEL_VERSION }}" != "5.10" ]; then
-           cp ../../SukiSU_patch/other/lz4k_patch/${{ github.event.inputs.KERNEL_VERSION }}/lz4kd.patch ./
-           patch -p1 -F 3 < lz4kd.patch || true
-          fi
+            cp ../../SukiSU_patch/hooks/syscall_hooks.patch ./
+            patch -p1 -F 3 < syscall_hooks.patch
+            #cp ../../SukiSU_patch/other/lz4k_patch/${{ github.event.inputs.KERNEL_VERSION }}/lz4kd.patch ./
+            #patch -p1 -F 3 < lz4kd.patch || true
          fi
 
       - name: Add SUSFS Configuration Settings
@@ -200,30 +198,34 @@ jobs:
           if [ "${{ github.event.inputs.kernelsu_variant }}" == "SKSU-U" ]; then
             echo "CONFIG_KSU_MANUAL_HOOK=y" >> ./common/arch/arm64/configs/gki_defconfig
             echo "CONFIG_KPM=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #if [ "${{ github.event.inputs.KERNEL_VERSION }}" = "5.10" ]; then
+          #  echo "CONFIG_ZSMALLOC=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #  echo "CONFIG_ZRAM=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #  echo "CONFIG_MODULE_SIG=n" >> ./common/arch/arm64/configs/gki_defconfig
+          #  echo "CONFIG_CRYPTO_LZO=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #  echo "CONFIG_ZRAM_DEF_COMP_LZ4KD=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #fi
 
-          if [ "${{ github.event.inputs.KERNEL_VERSION }}" != "6.6" ] && [ "${{ github.event.inputs.KERNEL_VERSION }}" != "5.10" ]; then
-            #sed -i 's/CONFIG_ZRAM=m/CONFIG_ZRAM=y/g' ./common/arch/arm64/configs/gki_defconfig
-            #sed -i 's/CONFIG_ZSMALLOC=m/CONFIG_ZSMALLOC=y/g' ./common/arch/arm64/configs/gki_defconfig
-            #sed -i 's/CONFIG_MODULE_SIG=y/CONFIG_MODULE_SIG=n/g' ./common/arch/arm64/configs/gki_defconfig
-            #echo "CONFIG_ZRAM_WRITEBACK=y" >> ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_LZ4K=y" >> ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_LZ4KD=y" >> ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_LZ4HC=y" >> ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_842=y" >> ./common/arch/arm64/configs/gki_defconfig
-          fi
+          #if [ "${{ github.event.inputs.KERNEL_VERSION }}" != "6.6" ] && [ "${{ github.event.inputs.KERNEL_VERSION }}" != "5.10" ]; then
+          #  sed -i 's/CONFIG_MODULE_SIG=y/CONFIG_MODULE_SIG=n/g' ./common/arch/arm64/configs/gki_defconfig
+          #  sed -i 's/CONFIG_ZSMALLOC=m/CONFIG_ZSMALLOC=y/g' ./common/arch/arm64/configs/gki_defconfig
+          #  sed -i 's/CONFIG_ZRAM=m/CONFIG_ZRAM=y/g' ./common/arch/arm64/configs/gki_defconfig
+          #fi
 
-          if [ "${{ github.event.inputs.KERNEL_VERSION }}" = "6.6" ]; then
-            #echo "CONFIG_ZSMALLOC=y" >> ./common/arch/arm64/configs/gki_defconfig
-            #echo "CONFIG_ZRAM_WRITEBACK=y" >> ./common/arch/arm64/configs/gki_defconfig
-            #sed -i 's/CONFIG_ZRAM=m/CONFIG_ZRAM=y/g' ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_LZ4K=y" >> ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_LZ4KD=y" >> ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_LZ4HC=y" >> ./common/arch/arm64/configs/gki_defconfig
-            echo "CONFIG_CRYPTO_842=y" >> ./common/arch/arm64/configs/gki_defconfig
-          fi
+          #if [ "${{ github.event.inputs.KERNEL_VERSION }}" = "6.6" ]; then
+          #  echo "CONFIG_ZSMALLOC=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #  sed -i 's/CONFIG_ZRAM=m/CONFIG_ZRAM=y/g' ./common/arch/arm64/configs/gki_defconfig
+          #fi
+
+          #if grep -q "CONFIG_ZSMALLOC=y" ./common/arch/arm64/configs/gki_defconfig && grep -q "CONFIG_ZRAM=y" ./common/arch/arm64/configs/gki_defconfig; then
+          #  echo "CONFIG_CRYPTO_LZ4HC=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #  echo "CONFIG_CRYPTO_LZ4K=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #  echo "CONFIG_CRYPTO_LZ4KD=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #  echo "CONFIG_CRYPTO_842=y" >> ./common/arch/arm64/configs/gki_defconfig
+          #fi
           else
              echo "CONFIG_KSU_WITH_KPROBES=n" >> ./common/arch/arm64/configs/gki_defconfig
-          fi
+            fi
 
           echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS=y" >> ./common/arch/arm64/configs/gki_defconfig
@@ -279,13 +281,16 @@ jobs:
          sed -i "/stable_scmversion_cmd/s/-maybe-dirty//g" ./build/kernel/kleaf/impl/stamp.bzl
   
       - name: Build kernel
+        if: ${{ github.event.inputs.CPU == 'sm8650' || github.event.inputs.CPU == 'sm8750' || github.event.inputs.CPU == 'sm7675' }}
+        run: |
+          cd kernel_workspace
+          ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} gki
+          
+      - name: Fallback build kernel
+        if: ${{ github.event.inputs.CPU != 'sm8650' && github.event.inputs.CPU != 'sm8750' && github.event.inputs.CPU != 'sm7675' }}
         run: |
          cd kernel_workspace
-         if [[ "${{ github.event.inputs.CPU }}" == "sm8650" || "${{ github.event.inputs.CPU }}" == "sm8750" ]]; then
-            ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} gki
-          else
-            LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} gki
-          fi
+         LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} gki
 
       - name: Make AnyKernel3
         run: |
@@ -320,15 +325,16 @@ jobs:
           fi
 
       - name: Apply patch_linux and replace Image
-        if: github.event.inputs.kernelsu_variant == 'SKSU-U'
+        if: ${{ github.event.inputs.kernelsu_variant == 'SKSU-U' }}
         run: |
           cd kernel_workspace/kernel_platform/out/msm-kernel-${{ github.event.inputs.CPUD }}-gki/dist
-          curl -LO https://raw.githubusercontent.com/KFzZ/Action-OnePlus-KernelSU-SUSFS/main/patch_linux
+          curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.11-beta/patch_linux
           chmod +x patch_linux
           ./patch_linux
           rm -f Image
           mv oImage Image
           cp Image $GITHUB_WORKSPACE/AnyKernel3/Image
+          cp Image $GITHUB_WORKSPACE/kernel_workspace/kernel
 
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
