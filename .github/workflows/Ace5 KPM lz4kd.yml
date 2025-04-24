@@ -1,4 +1,4 @@
-name: Ace5 KPM lz4kd(SukiSU-Ultra)
+name: Ace3 Pro KPM lz4kd(SukiSU-Ultra)
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +9,7 @@ on:
       FEIL:
         description: "配置文件"
         required: true
-        default: 'oneplus_ace5'
+        default: 'oneplus_ace3_pro_v'
       CPUD:
         description: "处理器代号"
         required: true
@@ -25,7 +25,7 @@ on:
       KERNEL_NAME:
         description: "自定义内核名称"
         required: true
-        default: '-android14-11-KFzZ'
+        default: '-android14-11-g1132d864665d'
       lz4kd:
         description: "添加 lz4kd"
         required: true
