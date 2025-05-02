@@ -9,7 +9,7 @@ on:
       FEIL:
         description: "配置文件"
         required: true
-        default: 'oneplus_ace5'
+        default: 'oneplus_ace3_pro_v'
       CPUD:
         description: "处理器代号"
         required: true
@@ -25,7 +25,7 @@ on:
       KERNEL_NAME:
         description: "自定义内核名称"
         required: true
-        default: '-android14-11-o-g54d4b575ebf6'
+        default: '-android14-11-o-g1132d864665d'
       kernelsu_variant:
         description: "选择 KSU"
         required: true
@@ -37,7 +37,7 @@ on:
           - RKSU
           - SKSU
           - SKSU-U
-        default: KSU
+        default: SKSU-U
       kernelsu_version:
         description: "选择 KSU 版本"
         required: true
